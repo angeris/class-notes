@@ -311,6 +311,93 @@ Note that, by sending $\omega \to 0$ we get the SIR + demography model, while se
 \]
 As one might expect, the resulting oscillations are quite a bit more complex than those of the usual SIR + demography model.
 
+\section{Session 4 (April 16)}
+The main question here is about alternate parametrizations; \ie, how do we actually fit models to actually measurable data?
+
+\subsection{Side note}
+
+\paragraph{Flattening the curve.} ``Flattening the Curve'' is probably going to go down as the Oxford Phrase of the year of 2020. What does it mean? Essentially, thinking back to SIR model, what does this actually change?
+
+The main reduction happens to be in $\beta$ (as one might expect). A second idea is that of interventions like HCQ or any other of the possible treatments which will do two things, either (a) hasten the recovery phase (increase $\gamma$) and also, ideally, reduce the general infectiousness as well. Sadly, none of the current treatments appear to be useful for either of these purposes and social distancing is the only thing actively working.
+
+What's important here is that, choosing some approximate parameters for COVID-19, $\beta = 1$, $\gamma = 1/3$ (units in days), and $R_0 = 3$. Note that, even if we decrease $R_0$ by 33\%, there is only a 15\% relative reduction of the total number of cumulative cases, yet the peak amount of infections at any one point in time is substantially lowered (by around 50\%) which helps hospitals in dealing with all of this.
+
+\paragraph{1918 Comparison.} The classic example of Philadelphia vs.\ St.\ Louis during the 1918 influenza pandemic. Philadelphia started its first case in Sep 17, holding a parade in Sep 28, and social distancing actually began in Oct 3 (far too late). The peak death rate was quite high. In comparison St.\ Louis started social distancing quite early and this led to a much smaller peak death rate (and therefore excess death rates), even though the total number of cumulative infected was approximately equal.
+
+\subsection{Why do we need the `E' SEIR?}
+We will focus on, practically, how do we actually measure the parameters? We will also chat about when we can work with SIR vs.\ SEIR.
+
+\paragraph{SIR Assumptions.} It's rarely the case that diseases will be symptomatic immediately after infection (\ie, `incubation' periods), and SIR models total ignore these states. While mathematically convenient, the SIR model ignores this.\marginnote{A fun set of SIR models to look at and explore are those of zombie infections, which are a classic set of SIR `case' studies.}
+
+\paragraph{Natural history vs.\ transmission intervals.} First, infections generate two periods in their natural history: first is the \emph{incubation} period, which, after symptom onset, starts the symptomatic period. In comparison to transmission intervals, where the disease has a \emph{latent} period that may or may not be infectious either before or after symptomatic onset and ending before or after. Often these are correlated, but are not necessarily equivalent.\marginnote{\emph{Incubation period:} the period before symptoms, this is distinct from the latent period or the infectious period.\\\emph{Latent period:} period before the infectious period.
+\\\emph{Infectious period:} the period where someone can transmit the disease to other cases.}
+
+For example, Whooping cough, has a latent period of 21-23 days, the infectious period is 10-11 days, yet the incubation period is 6-10 days. In contrast, measles has a latent period of 6-9 days, an infectious periods of 6-7 days, yet it has an incubation period of 8-13 days. This implies that measles has a day of potentially asymptomatic transmission, leading to difficulties in detecting it and stopping its spread.
+
+\paragraph{How do we measure such intervals?} Almost all of the data comes from common household exposures: for example, whether people slept together, or were just present in these cases, etc. The problem with such studies is that people are consistently in contact with their household mates every day, so it's not clear when the transmission actually happened vs.\ when there was just exposure.
+
+Another way of measuring this is to take advantage of one-off exposures at a known time. There aren't a ton of these, but SARS is one major example where these studies have appeared. The classic case is the flight from Hong Kong to Beijing and the index case was a symptomatic man 4 days into the illness, resulting in 22 people with probable secondary cases. The disease prevalence among passengers was carefully mapped and the results provided evidence against broad airborne secondary infections, but still had large amounts. Given the known day of flight and likely exposure, it was then not difficult to understand the latent period of the incubation period.
+
+Similar studies were done for COVID-19, which showed that the median incubation period is around 5 days, with 97.5\% days developed symptoms within 9 days, and $\approx 99.9\%$ within two weeks. We are, of course, revisiting this as it seems that viral shedding continues well after symptoms are resolved.
+
+\paragraph{On incubation periods vs.\ serial intervals.} Based on the idea that measuring the clinical onset serial interval (\ie, the interval starting after symptoms and then ending at some determined point after symptoms resolve) is easier than actually measuring the exact nature of transmission. The problem happens when, for person A, the infectious period begins well before symptoms, yet the secondary case (person B, say) has a short incubation period. This leads to negative serial intervals, which happens sometimes in the literature, but that is generally fine.
+
+\paragraph{Emerging data on COVID-19.} A recent study looked at these periods were for COVID-19.\marginnote{See \emph{Temporal dynamics in viral shedding and transmissibility of COVID-19}.} It showed that the serial interval was around 5 days (MLE) with, of course several negative serial intervals as one might expect. The transmission distribution, with respect to the days of symptom onsets showed that transmission peaked at 1 day \emph{before} the transmission onset. And, as before, it showed the incubation period had the MLE at around 3 days. Finally, it found around 44\% of transmission in asymptomatic period.
+
+A second study\marginnote{Spread of SARS-CoV-2 in the Icelandic Population.} found that 43\% of PCR+ confirmed cases were asymptomatic.
+
+\subsection{(And now, finally) SEIR Models}
+As one might expect, the SEIR model adds a new `exposed' state, which generates a new graph (see figure~\ref{fig:seir-deaths}).
+
+\begin{figure}[ht!]
+\centering
+\begin{tikzpicture}[node distance=1.5cm, auto]
+    \node [box](S) {$S$};
+    \node [box, right=of S](E) {$E$};
+    \node [box, right=of E](I) {$I$};
+    \node [box, right=of I](R) {$R$};
+
+    \path (S.south) edge[arr] node[below left] {$\mu$} ++ (1,-1);
+    \path (-1.75, 0) edge[arr] node[above] {$\mu$} (S);
+    \path (E.south) edge[arr] node[below left] {$\mu$} ++ (1,-1);
+    \path (I.south) edge[arr] node[below left] {$\mu$} ++ (1,-1);
+    \path (R.south) edge[arr] node[below left] {$\mu$} ++ (1,-1);
+    \path (S.east) edge[arr] node[above]{$\sigma E$} (E);
+    \path (E.east) edge[arr] node[above]{$\beta I$} (I);
+    \path (I.east) edge[arr] node[above]{$\gamma$}(R);
+\end{tikzpicture}
+\caption{SEIR model with deaths.}
+\label{fig:seir-deaths}
+\end{figure}
+
+
+In this case the susceptible population moves to the exposed state with a rate of $\sigma E$ (and moves to the infected with a rate of $\gamma I$). In this model. the basic reproductive number is given by,
+\[
+R_0 = \frac{\beta \sigma}{(\mu + \gamma)(\mu + \sigma)}.
+\]
+We can interpret this intuitively, by noting that, if the outgoing rates for two events are given by $r_1$ and $r_2$, then, in a uniformly sampled random interval, the probability of event 1 ocurring first is given by $r_1/(r_1 + r_2)$.
+
+Given this, though, the duration of infectiousness ($D$) is given by $D = 1 / (\mu + \gamma)$. This means that $R_0$ in the SIR model is $\beta D = \beta / (\mu + \gamma)$, while the probability of surviving the duration of the exposed state is given by $\sigma / (\mu + \sigma)$, so multiplying these rates together, we get $R_0$ as defined above. Of course, if $\sigma \gg \mu$ (\ie, if the rate of exposure is much larger than the death rate) then we get that
+\[
+\frac{\sigma}{\mu + \sigma} \approx 1.
+\]
+(In other words, the proportion of surviving exposed is nearly one.)
+\paragraph{Tuberculosis example.} While this might seem like it would be a common assumption, it turns out to not be true in TB: among those infected, only 10\% develop active TB (\ie, $p = .1$), while 90\% remain latent. An estimation is that without treatment, those with active TB infect around 10 people a year and are infectious for 2 years. This implies that
+\[
+R_0 = p\beta D \approx 2.
+\]
+
+\paragraph{Interventions targeting latent period.} Given someone who is exposed prophylaxis, could send them to either (a) a recovered state, or (b) a susceptible state. The problem is that in many cases we don't know which it will be. This is the idea for post-exposure therapy and is being evaluated for COVID-19 people with high-risk of exposure (and is common practice for HIV).
+
+A question we can ask is, how effective would an intervention need to be to bring $R_0$ to less than 1? Suppose that $R_0 = 2.5$, then, assuming $p \approx 1$ without prophylaxis, we get that we would need to improve $p$ to at least $p = .4$, \ie, prophylaxis would need to reduce $p$ by at least 60\% in order to bring the new case to $R_0' < 1$.
+
+\paragraph{Modeling growth rate more accurately.} For SARS-nCov-2, the SEIR model with $R_0 = 2.5$ latent period of 4 days, and infectious period of 5 days. The SEIR model predicts around 50 cases, while the SIR model predicts $>8000$ cases.\marginnote{This is a little clear, since infectiousness immediately after exposure would make a disease spread essentially uncontrolled.}
+
+Surprisingly, it seems that many incubation periods typically follow log-normal distributions.
+
+\paragraph{Distribution times in SEIR model.} Note that compartmental models actually imply that waiting times for exposure times are really \emph{exponentially distributed} which is quite different from the assumption of log-normality and can give very different results. So, this would say that most people are really in the compartments with 0.
+
+One way of dealing with this is to add some more compartments. We can add a $n$ new compartments of latent periods, each with rates given by $n \sigma$. This is sometimes called the SE$_n$IR model. By CLT\marginnote{This is another curious thing to investigate}, we then find that the proportions then start following a log-normal distribution, which more accurately captures the known distributions.
 
 \end{document}
 
