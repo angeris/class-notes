@@ -399,5 +399,55 @@ Surprisingly, it seems that many incubation periods typically follow log-normal 
 
 One way of dealing with this is to add some more compartments. We can add a $n$ new compartments of latent periods, each with rates given by $n \sigma$. This is sometimes called the SE$_n$IR model. By CLT\marginnote{This is another curious thing to investigate}, we then find that the proportions then start following a log-normal distribution, which more accurately captures the known distributions.
 
+\section{Section 5 (April 23)}
+We will discuss stratification and other possible improvements to the current models, including transmission matrices.
+
+\subsection{SIS models and stratification}
+In the case of the SIS (susceptible $\to$ infected $\to$ susceptible) model, we have a single equilibrium given by
+\[
+\left(\frac{\beta}{\gamma}, 1 - \frac{\beta}{\gamma}\right).
+\]
+
+\paragraph{Stratified SIS.} Now, we can construct a simple stratified SIS model. Here, we generate two SIS models (with four compartments, $S_L, I_L$ and $S_H, I_H$, one for low risk and one for high) and one $\beta$ for each of the possible mixing coefficients, $\beta_{LL}$, $\beta_{LH}$, $\beta_{HL}$, $\beta_{HH}$. We will create a new matrix called the \emph{contact matrix} given by
+\[
+\beta = \begin{bmatrix}
+	\beta_{LL} & \beta_{LH}\\
+	\beta_{HL} & \beta_{HH}
+\end{bmatrix}.
+\]
+We will say that a group is \emph{high risk} if $\beta_{HL} + \beta_{HH} > \beta_{LL} + \beta{LH}$. Additionally, we will say that the matrix is \emph{symmetric} if $\beta_{HL} = \beta_{LH}$ and the matrix is \emph{assortative} if $\beta_{HL} < \beta_{HH}$ and $\beta_{LH} < \beta_{LL}$.
+
+\paragraph{Implications of stratification.} Obviously, if $\beta_{LH} = \beta_{HL} = 0$, then the models simply decouple and we get two individual models. On the other hand, if this is not true, it could induce interesting behavior in the two different groups where, \eg, one could see that an infection could die out in one subgroup, but then be increased again due to reintroduction from the other group.
+
+As one might expect from the linear dynamical systems perspective, the general dynamics will follow those of the group with the largest eigenvalue of $\beta$. Additionally, stratified models can sustain an endemic equilibrium with relatively low \emph{overall} prevalence (though there is a higher fraction of the $H$ subgroup that is infected).
+
+
+\paragraph{Control measures.} We can add a new compartment to the SIS model, a vaccinated compartment $V$, which removes those from the susceptible pool (and places them into the new pool $V$) at some specific rate. The question is, how many people do we need to vaccinate for optimal control? And how targeted should the vaccinations be? (How many from each of the $H$ and $L$ subgroups are needed?)\marginnote{This could lead to an interesting control problem over time, especially with uncertainty; the result could lead to an MDP, for example.}
+
+\paragraph{Inference.} How do we infer the matrix $\beta$? If we assume that contacts occur at random between people of types $i$ and $j$, and the fraction of contacts is (XXX complete, not clear from slides)
+
+In this partnership model, we can then directly derive $R_0$ from the mean $M$ and variance $v$ of the number of partners (XXX: check this)
+\[
+R_0 = \frac{\beta}{\gamma}\frac{M^2 + V}{V}.
+\]
+Note that this random partnership model is not assortative. We can add an additional term $\alpha$ which displays an additional preference of people of a given group to mix with those of the same group. To do this, take a convex combination (with weights $\alpha$ and $1-\alpha$) of this model and the perfectly isolated model.\marginnote{How about a convex problem? This is a question of inferring essentially a PSD matrix.}
+
+\paragraph{Survey methods.} Another approach to establish empirical mixing patterns, we can also easily survey people about their behaviors/contacts. This is simple in the case of, say STDs, but hard when you consider respiratory diseases. You can also construct a transmission graph by simply asking how many people each person had, and then attempt to reconstruct the corresponding graph from it, which can then be used to build its mixing matrix, where each row and column represents a compartment, which is stratified by the number of people who someone has had relationships with.
+
+\subsection{Risk stratified models}
+Recall that the SIR model with demographics has a damped oscillatory equilibrium (in the endemic case). In this model, people stayed in their age groups.
+
+Note that people move from one age to another age group in a fairly predictable manner. This creates flows between the susceptible, infected, and recovered compartments of each of the models (which is independent of the infections and coefficient matrix between them!). What are the resulting dynamics?
+
+\subsection{Fixed and time varying parameters}
+A simple example of this is to have a time-varying contact parameter. One specific case is to have a simple oscillatory contact parameter:
+\[
+\beta = \beta_0(1 + \cos(\omega t)),
+\]
+for some oscillation $\omega$. Now, if $\omega$ is close to the equilibrium oscillation period, you get fun resonances (\eg, forcing) which yields some specific spiking behavior.
+
+
+
+
 \end{document}
 
