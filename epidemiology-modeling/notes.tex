@@ -446,6 +446,43 @@ A simple example of this is to have a time-varying contact parameter. One specif
 \]
 for some oscillation $\omega$. Now, if $\omega$ is close to the equilibrium oscillation period, you get fun resonances (\eg, forcing) which yields some specific spiking behavior.
 
+\section{Section ??? (May 5)}
+``The real world contains randomness.'' In the previous lectures, everything was not random---things are deterministic and only initial conditions are required.\marginnote{It's not generally clear to me how to deal with chaos in this case, so I'm quite curious. (Sometimes, noise helps with chaos as in, \eg, the Lorenz system.}
+
+\paragraph{On data.} Generally, looking at data, we see that the resulting points are fairly noisy. In particular, the number of cases seems to be somewhat noisy and not well-described by the given dynamics. That being said, there are often clear, if somewhat weak, correlations in the data.
+
+\paragraph{Main question.} The main question we will ask today is: when does stochasticity make the previous models' predictions less applicable? How do we deal with this randomness in practice?
+
+\subsection{Some stochastic dynamics}
+We'll consider a simple model, where our ODE is represented by
+\[
+f(t) = \theta t^2.
+\]
+for some parameter $\theta \in \reals$.
+Of course, this particular model is deterministic, but if we allow the parameter $\theta$ to be normally distributed with mean one and variance .01, \ie,
+\[
+\theta\sim \mathcal{N}(1, .01),
+\]
+then we (obviously, by definition) get a stochastic model. In other words, even though the mean (and variance) of $\theta$ is the same, we get different possible
+trajectories of $f$.
+
+\paragraph{Randomness in models.} For example, we could have models where the parameters themselves are also random. So, one particular case is that everyone has an average of 4 contacts, but many people have more or less and their nominal contact number will depend on, for example, the weather that day.
+
+
+\paragraph{Simple SI model.} Consider just the usual SI model, parametrized by $\Lambda > 0$. The solution, as before, is given by
+\[
+I(t) = I_0e^{\Lambda t}.
+\]
+Clearly, the solution for given $\Lambda$ is fixed and easily solvable at any $t$ for any given $\Lambda$.
+
+Now, we will allow $\Lambda_t$ to be a random variable (in particular, we will assume that $\Lambda_t = \Lambda + \sigma\xi_t$, where $\xi_t \sim \mathcal{N}(0, 1)$,
+for each $t > 0$). The resulting process,
+\[
+I(t) = I_0e^{\Lambda_t t},
+\]
+is a stochastic process. In particular, what we will see is that, due to the scaling factor of $t$ for each $\Lambda_t$, it appears as if the samples get more noisy as the time continues (even though the parameter's variance does not change).
+
+\paragraph{Equilibria.} If the scale of the noise is large enough (relative to the population of the community), note that it is possible we never reach a damped equilibrium.
 
 
 
